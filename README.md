@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# QQClawNewbie
+
+一个用于配置个性化 OpenClaw 的 H5 Demo 项目。
 
 ## Getting Started
 
