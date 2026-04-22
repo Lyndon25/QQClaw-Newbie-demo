@@ -1,38 +1,166 @@
 # QQClawNewbie
 
-一个用于配置个性化 OpenClaw 的 H5 Demo 项目。
+**个性化 OpenClaw 配置系统（Demo）**
 
-## Getting Started
+QQClawNewbie 是一款面向移动端 H5 的个性化 AI 助手配置系统 Demo。它通过多通道、可视化、可交互的配置流程，帮助 QQ 生态内的用户以低门槛、高趣味性的方式完成 OpenClaw 人格配置——不需要阅读任何技术文档，点选标签、聊天对话、导入文件或授权数据，即可快速生成一份带有人格类型、标签云、Soul 设定与原始 JSON 的完整配置。
 
-First, run the development server:
+当前项目是一个可运行的前端 Demo：打开页面，选择任意配置通道，完成交互后即可在结果页查看并复制生成的配置。
+
+---
+
+## 本 Demo 的功能
+
+### 面向人群
+
+- QQ 生态内的普通用户（对 OpenClaw 感到陌生，希望快速上手）。
+- 有明确需求的进阶用户（知道自己想要什么类型的助手，希望快速模板化配置）。
+- 已有配置或聊天记录的迁移用户（希望把历史偏好一键导入新助手）。
+- 愿意基于自身数据做深度优化的用户（希望通过授权数据获得更精准的推荐）。
+
+### 解决的痛点
+
+- **陌生感**：用户不知道 OpenClaw 能做什么，也不知道从何开始配置。
+- **配置门槛高**：传统表单式配置需要理解人格特质、能力插件、Soul 设定等概念，认知成本大。
+- **缺乏趣味性**：纯文本表单的填写过程枯燥，用户容易中途流失。
+- **迁移困难**：用户可能在其他平台已有偏好记录，但无法快速迁移到 OpenClaw。
+
+### 已实现的核心功能
+
+1. **配置大厅首页**：顶部渐变品牌区 + 四通道卡片展示；实时进度追踪（Zustand 全局状态）；一键生成与重置。
+2. **通道 A — 角色模板**：24 个标签覆盖使用场景、性格倾向、交互偏好、关注领域四大维度；多选高亮 + 数量统计 + 一键清空；确认后自动返回大厅。
+3. **通道 B — 对话定制**：拟真 IM 界面（头像、在线状态、打字指示器）；5 轮固定对话流程覆盖场景、风格、创意、回应等维度；快捷回复 + 手动输入；自动提取标签存入状态。
+4. **通道 C — 文件导入**：拖拽/点击上传区域；模拟上传 → 解析 → 成功流程；按文件类型自动生成标签；隐私安全提示（仅本地解析）。
+5. **通道 D — 数据授权**：完整 5 步授权流程（介绍 → 权限选择 → 扫描分析 → 分析报告 → 完成）；雷达扫描动画 + 6 维分析报告；用户可自主选择采纳标签。
+6. **结果页**：展示匹配人格类型与副标题；配置完成度可视化；动态标签云；OpenClaw 4 大维度概览；Soul 设定（Markdown，可复制）；原始 JSON（可复制）；重新配置入口。
+7. **预设人格库**：基于对 OpenClaw 官方 [best-practices](https://openclaw-ai.com/en/blog/best-practices) 的调研，已沉淀 9 个高质量预设（极客架构师、灵感捕手、生活管家、战略军师、学术研究员、代码导师、数据分析师、产品经理、心灵疗愈师），覆盖九大典型场景。
+8. **标签匹配算法**：基于用户在各通道产生的标签，与 9 类预设标签做交集计数匹配，返回最接近的人格；无标签时返回通用配置。
+
+---
+
+## 技术栈
+
+| 技术 | 版本 | 用途 |
+|------|------|------|
+| [Next.js](https://nextjs.org/) | 16.2.4 | React 全栈框架，App Router 路由 |
+| [React](https://react.dev/) | 19.2.4 | UI 组件库 |
+| [TypeScript](https://www.typescriptlang.org/) | ^5 | 类型安全 |
+| [Tailwind CSS](https://tailwindcss.com/) | ^4 | 原子化 CSS 样式 |
+| [Zustand](https://github.com/pmndrs/zustand) | ^5.0.12 | 轻量级全局状态管理 |
+| [Framer Motion](https://www.framer.com/motion/) | ^12.38.0 | 动画效果与页面过渡 |
+| [Lucide React](https://lucide.dev/) | ^1.8.0 | 图标库 |
+
+---
+
+## 目标版本 vs 当前 Demo 的差异说明与后续计划
+
+### 当前 Demo 已经能做什么
+
+- 配置大厅展示四通道卡片，实时追踪各通道完成状态，支持一键重置。
+- 通道 A 提供 4 大维度共 24 个标签的多选界面，标签数据汇入全局状态。
+- 通道 B 模拟 5 轮拟真对话，用户通过快捷按钮或自由输入完成交互，系统自动提取标签。
+- 通道 C 模拟拖拽上传、解析流程与标签提取，展示隐私安全提示。
+- 通道 D 完成完整的 5 步授权引导流程（介绍→权限→扫描→报告→完成），含雷达扫描动画。
+- 结果页展示匹配人格类型、配置完成度、动态标签云、4 大维度概览、Soul Markdown 与原始 JSON。
+- 预设人格库已沉淀 9 个高质量预设，覆盖技术、创意、生活、战略、学术、教学、数据、产品、心理九大场景。
+- 基于标签的静态匹配算法已可运行，根据用户选择返回最接近的预设人格。
+
+### 与目标版本的主要差距
+
+- **缺少真实大模型对话**：通道 B 的 5 轮对话为固定文案，目标版本将接入 GPT/Claude 等 API，实现真正的多轮理解与动态生成。
+- **缺少真实文件解析**：通道 C 为随机模拟结果，目标版本将使用浏览器 File API 读取本地文件，完成 JSON/YAML/Markdown 的结构化解析。
+- **缺少真实数据授权**：通道 D 完全模拟，目标版本在合规授权下可接入真实行为数据，生成个性化报告。
+- **配置生成过于静态**：当前为标签匹配预设模板，目标版本将接入大模型进行深度理解，综合多通道输入生成真正个性化的配置。
+- **缺少配置导出与分享**：当前仅支持页面内复制 JSON，目标版本将支持导出文件、生成分享链接。
+- **缺少试聊与预览**：结果页无即时交互，目标版本将增加"试聊"入口，让用户即时检验配置效果。
+- **缺少多端适配**：当前为纯 H5，目标版本将扩展至微信小程序或桌面端。
+
+### 后续优化目标与实现计划
+
+#### 1) 短期改进（1–2 周内可完成）
+
+- **扩充预设人格库**：至少再增加 4–6 个高质量预设，覆盖更多垂直场景。
+- **优化匹配算法**：从"包含即匹配"升级为加权匹配算法，考虑标签权重与通道优先级。
+- **丰富对话分支**：即使未接入大模型，也可通过更丰富的条件分支让对话体验更自然。
+- **增加导出功能**：支持 JSON 文件下载与分享链接生成。
+
+#### 2) 中期改进（1 个月内可完成）
+
+- **接入真实大模型对话**：将通道 B 替换为真正的 AI 多轮对话，这是体验提升最大的改进点。
+- **实现真实文件解析**：使用浏览器 File API 读取并解析用户本地文件。
+- **增加实时预览**：结果页增加"试聊"入口，即时检验配置效果。
+- **UI 细节打磨**：深色模式、骨架屏、空状态引导、加载优化（图片压缩、懒加载、代码分割）。
+
+#### 3) 长期愿景（课程结束后可继续探索）
+
+- **构建配置市场**：用户可分享或下载他人的 OpenClaw 配置模板，形成社区生态。
+- **多端适配**：从纯 H5 扩展至微信小程序或桌面端。
+- **接入真实数据授权**：在合规允许下基于真实使用数据实现精准推荐。
+- **工程化完善**：接入错误监控、性能分析、单元测试与 E2E 测试覆盖。
+
+---
+
+## 快速开始
+
+### 环境要求
+
+- Node.js 18.x 或更高版本
+- npm / yarn / pnpm
+
+### 安装依赖
+
+```bash
+npm install
+```
+
+### 启动开发服务器
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+在浏览器中打开 [http://localhost:3000](http://localhost:3000) 查看结果。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 构建生产版本
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 项目结构
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+QQClawNewbie/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── page.tsx            # 配置大厅首页
+│   │   ├── layout.tsx          # 根布局
+│   │   ├── channel-a/          # 角色模板通道
+│   │   ├── channel-b/          # 对话定制通道
+│   │   ├── channel-c/          # 文件导入通道
+│   │   ├── channel-d/          # 数据授权通道
+│   │   └── result/             # 结果页
+│   ├── components/             # 共享组件
+│   │   ├── Navbar.tsx
+│   │   ├── BottomButton.tsx
+│   │   └── PageTransition.tsx
+│   ├── lib/                    # 工具库
+│   │   └── openClawPresets.ts  # 预设人格库
+│   ├── store/                  # 状态管理
+│   │   └── useAppStore.ts      # Zustand 全局状态
+│   └── types/                  # TypeScript 类型定义
+├── public/                     # 静态资源
+├── docs-latex/                 # LaTeX 文档源文件
+├── next.config.ts              # Next.js 配置
+├── tailwind.config.ts          # Tailwind CSS 配置
+├── tsconfig.json               # TypeScript 配置
+└── package.json                # 项目依赖
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 许可证
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+本项目仅供学习与演示使用。
