@@ -933,54 +933,79 @@ export function generateConfigFromTags(
     matchedPreset =
       openClawPresets.find((p) => p.id === presetId) || openClawPresets[0];
   } else {
-    // 简单的标签匹配逻辑
-    const techTags = ["代码审查", "架构设计", "技术深耕", "效率优先", "逻辑推演", "程序员", "开发者"];
-    const creativeTags = ["文字创作", "情感共鸣", "创意发散", "故事编织", "审美敏感", "写作者", "设计师"];
-    const lifeTags = ["日程管理", "生活建议", "情绪陪伴", "健康提醒", "关系维护", "旅行者", "生活家"];
-    const strategyTags = ["商业分析", "战略规划", "决策辅助", "竞争洞察", "风险预判", "创业者", "管理者"];
-    const researchTags = ["文献综述", "研究方法", "学术写作", "理论推演", "知识整理", "学术", "研究", "论文"];
-    const mentorTags = ["编程教学", "算法讲解", "代码调试", "基础夯实", "学习路径", "教学", "导师", "学习"];
-    const dataTags = ["数据清洗", "可视化", "商业洞察", "统计分析", "报表生成", "数据", "分析", "BI"];
-    const productTags = ["需求分析", "用户研究", "产品设计", "迭代规划", "跨端协调", "产品", "PM", "用户"];
-    const healerTags = ["情绪疏导", "正念引导", "心理支持", "压力释放", "自我觉察", "心理", "疗愈", "情绪"];
-
-    const scores = {
-      tech: tags.filter((t) => techTags.some((tt) => t.includes(tt) || tt.includes(t))).length,
-      creative: tags.filter((t) => creativeTags.some((tt) => t.includes(tt) || tt.includes(t))).length,
-      life: tags.filter((t) => lifeTags.some((tt) => t.includes(tt) || tt.includes(t))).length,
-      strategy: tags.filter((t) => strategyTags.some((tt) => t.includes(tt) || tt.includes(t))).length,
-      research: tags.filter((t) => researchTags.some((tt) => t.includes(tt) || tt.includes(t))).length,
-      mentor: tags.filter((t) => mentorTags.some((tt) => t.includes(tt) || tt.includes(t))).length,
-      data: tags.filter((t) => dataTags.some((tt) => t.includes(tt) || tt.includes(t))).length,
-      product: tags.filter((t) => productTags.some((tt) => t.includes(tt) || tt.includes(t))).length,
-      healer: tags.filter((t) => healerTags.some((tt) => t.includes(tt) || tt.includes(t))).length,
+    // 扩展的关键词映射，覆盖所有 channel 中的用户标签
+    const presetKeywords: Record<string, string[]> = {
+      "tech-architect": [
+        "代码审查", "架构设计", "技术深耕", "效率优先", "逻辑推演", "程序员", "开发者",
+        "代码开发", "理性严谨", "直接坦率", "犀利敏锐", "简洁回答", "结构化输出", "步骤拆解", "科技创新", "效率工具",
+        "技术开发", "简洁直接",
+        "技术向", "开发者模式", "已有配置继承",
+        "简练直接", "科技", "数码", "结构化", "内敛",
+      ],
+      "creative-writer": [
+        "文字创作", "情感共鸣", "创意发散", "故事编织", "审美敏感", "写作者", "设计师",
+        "内容创作", "感性细腻", "幽默风趣", "举例说明", "对话式互动", "人文艺术",
+        "幽默轻松", "创意发散型",
+        "情感丰富", "对话偏好", "社交活跃",
+      ],
+      "life-companion": [
+        "日程管理", "生活建议", "情绪陪伴", "健康提醒", "关系维护", "旅行者", "生活家",
+        "生活管家", "温和耐心", "健康生活", "社会关系",
+        "生活管理", "像朋友聊天",
+      ],
+      "strategist": [
+        "商业分析", "战略规划", "决策辅助", "竞争洞察", "风险预判", "创业者", "管理者",
+        "商业决策", "商业财经", "犀利敏锐",
+        "务实解决型", "两者平衡", "像助手执行", "专业严谨",
+      ],
+      "research-scholar": [
+        "文献综述", "研究方法", "学术写作", "理论推演", "知识整理", "学术", "研究", "论文",
+        "学习助手", "详细展开", "理性严谨",
+        "像导师指导", "专业严谨",
+      ],
+      "code-mentor": [
+        "编程教学", "算法讲解", "代码调试", "基础夯实", "学习路径", "教学", "导师", "学习",
+        "像导师指导", "循序渐进", "学习助手",
+      ],
+      "data-analyst": [
+        "数据清洗", "可视化", "商业洞察", "统计分析", "报表生成", "数据", "分析", "BI",
+        "结构化",
+      ],
+      "product-manager": [
+        "需求分析", "用户研究", "产品设计", "迭代规划", "跨端协调", "产品", "PM", "用户",
+        "像助手执行", "务实解决型", "两者平衡",
+        "偏好导入", "自定义配置", "个性化设置", "效率工具",
+      ],
+      "mind-healer": [
+        "情绪疏导", "正念引导", "心理支持", "压力释放", "自我觉察", "心理", "疗愈", "情绪",
+        "情感陪伴", "温和耐心", "社会关系",
+        "像朋友聊天",
+        "情感丰富", "对话偏好",
+        "内敛",
+      ],
     };
 
-    const maxScore = Math.max(
-      scores.tech,
-      scores.creative,
-      scores.life,
-      scores.strategy,
-      scores.research,
-      scores.mentor,
-      scores.data,
-      scores.product,
-      scores.healer
-    );
+    const scores: Record<string, number> = {};
+    for (const [presetId, keywords] of Object.entries(presetKeywords)) {
+      scores[presetId] = tags.filter((t) =>
+        keywords.some((k) => t.includes(k) || k.includes(t))
+      ).length;
+    }
 
-    if (maxScore === scores.tech) matchedPreset = openClawPresets[0];
-    else if (maxScore === scores.creative) matchedPreset = openClawPresets[1];
-    else if (maxScore === scores.life) matchedPreset = openClawPresets[2];
-    else if (maxScore === scores.strategy) matchedPreset = openClawPresets[3];
-    else if (maxScore === scores.research) matchedPreset = openClawPresets[4];
-    else if (maxScore === scores.mentor) matchedPreset = openClawPresets[5];
-    else if (maxScore === scores.data) matchedPreset = openClawPresets[6];
-    else if (maxScore === scores.product) matchedPreset = openClawPresets[7];
-    else matchedPreset = openClawPresets[8];
+    const entries = Object.entries(scores);
+    const maxScore = Math.max(...entries.map(([, s]) => s));
+
+    if (maxScore > 0) {
+      const bestId = entries.find(([, s]) => s === maxScore)![0];
+      matchedPreset = openClawPresets.find((p) => p.id === bestId) || openClawPresets[0];
+    } else {
+      // 无匹配时默认使用"生活管家"（适用范围最广）
+      matchedPreset = openClawPresets[2];
+    }
   }
 
   // 基于 matchedPreset 和用户的标签生成个性化配置
-  const mergedTags = [...new Set([...matchedPreset.tags, ...tags])];
+  const mergedTags = Array.from(new Set([...matchedPreset.tags, ...tags]));
 
   const config: OpenClawConfig = {
     ...matchedPreset.config,
